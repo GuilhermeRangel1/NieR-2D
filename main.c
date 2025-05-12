@@ -450,7 +450,7 @@ int jogo(void) {
         ClearBackground(RAYWHITE);
         
         if(salaAtual == sala5){
-    DrawTextureEx(salaAtual->background, (Vector2){-20, 10}, 0.0f, 1.8f, RAYWHITE);
+    DrawTextureEx(salaAtual->background, (Vector2){-20, 10}, 0.0f, 1.05f, RAYWHITE);
 }else{
     Rectangle dest = {
         0, 
@@ -544,19 +544,27 @@ int jogo(void) {
 }
 tela Menu(void) {
     InitAudioDevice();
-    Texture2D image = LoadTexture("./images/A.png");
-    UnloadTexture(image);
+    
+    Texture2D menuBackground = LoadTexture("./images/backgroundMenu.png");
+    SetTextureFilter(menuBackground, TEXTURE_FILTER_POINT); // Remove o efeito de blur
+    
     Music menuMusic = LoadMusicStream("./music/significance.mp3");
     SetMusicVolume(menuMusic, 0.5f);
     PlayMusicStream(menuMusic);
+
     int selectedOption = 0;
     int numRanking = contScore(ranking);
     const char *menuOptions[quantOpcoes] = { "Iniciar", "Instruções", "Ranking", "Sair" };
-    Color semiTransparent = (Color){255, 255, 255, 128};
-    Texture2D menuBackground = LoadTexture("./images/A.png");
-    
+
+    int fontSize = 20;
+    int spacing = 40;
+    int totalHeight = quantOpcoes * spacing;
+    int startY = (altura - totalHeight) / 2;
+    int titleY = startY - 60; // Nova posição vertical do título
+
     while (!WindowShouldClose()) {
         UpdateMusicStream(menuMusic);
+
         if (IsKeyPressed(KEY_DOWN)) selectedOption = (selectedOption + 1) % quantOpcoes;
         if (IsKeyPressed(KEY_UP)) selectedOption = (selectedOption - 1 + quantOpcoes) % quantOpcoes;
 
@@ -578,26 +586,27 @@ tela Menu(void) {
 
         BeginDrawing();
             ClearBackground(RAYWHITE);
-            
-            DrawTexture(menuBackground, 0, 0, WHITE);
 
-            DrawRectangle(0, 0, largura / 2, altura, semiTransparent);
-            DrawRectangle(largura / 2, 0, largura / 2, altura, semiTransparent);
+            DrawTexture(menuBackground, 0, 0, WHITE); // Fundo sem efeito de blur
 
-            DrawText("Menu Principal", largura / 4 - MeasureText("Menu Principal", 30) / 2, 50, 30, DARKBLUE);
+            // Centraliza "Menu Principal" horizontalmente e posiciona acima das opções
+            DrawText("Menu Principal", (largura - MeasureText("Menu Principal", 30)) / 2, titleY, 30, DARKBLUE);
 
             for (int i = 0; i < quantOpcoes; i++) {
-                Color color = (i == selectedOption) ? RED : BLACK;
-                DrawText(menuOptions[i], largura / 4 - MeasureText(menuOptions[i], 20) / 2, 150 + i * 40, 20, color);
+                Color color = (i == selectedOption) ? RED : WHITE;
+                int textWidth = MeasureText(menuOptions[i], fontSize);
+                int posX = (largura - textWidth) / 2;
+                int posY = startY + i * spacing;
+                DrawText(menuOptions[i], posX, posY, fontSize, color);
             }
 
             if (selectedOption == 1) {
-                DrawText("Instruções", largura * 3 / 4 - MeasureText("Instruções", 30) / 2, 50, 30, DARKBLUE);
+                DrawText("Instruções", (largura * 3 / 4 - MeasureText("Instruções", 30) / 2), 50, 30, DARKBLUE);
                 DrawText("Use W-A-D para movimentar o personagem.", largura / 2 + 20, 150, 17, BLACK);
                 DrawText("Use as setas para disparar.", largura / 2 + 20, 190, 17, BLACK);
                 DrawText("Aperte ESC para parar de jogar.", largura / 2 + 20, 230, 17, BLACK);
             } else if (selectedOption == 2) {
-                DrawText("Ranking", largura * 3 / 4 - MeasureText("Ranking", 30) / 2, 50, 30, DARKBLUE);
+                DrawText("Ranking", (largura * 3 / 4 - MeasureText("Ranking", 30) / 2), 50, 30, DARKBLUE);
                 DrawText("Top 10 melhores pontuações!", largura / 2 + 20, 130, 17, BLACK);
                 for(int i = 0; i < numRanking; i++){
                     char text[100];
@@ -607,6 +616,7 @@ tela Menu(void) {
             }
         EndDrawing();
     }
+
     UnloadMusicStream(menuMusic);
     CloseAudioDevice();
     UnloadTexture(menuBackground);
@@ -757,7 +767,7 @@ Sala* criarSala(int id) {
         sala->plataforma[0] = (Rectangle){200, 800, 300, 30};
         sala->plataforma[1] = (Rectangle){500, 750, 200, 30};
     } else if (id == 5) {
-        sala->background = LoadTexture("./images/scenesample.gif");
+        sala->background = LoadTexture("./images/finalboss.png");
         sala->inimigoVivo = true;
         sala->enemy = (Rectangle){0, sala->teto.y + sala->teto.height, 200, 50};
         sala->vidaInimigo = 100;

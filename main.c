@@ -579,10 +579,10 @@ int jogo(void) {
 }
 tela Menu(void) {
     InitAudioDevice();
-    
-    Texture2D menuBackground = LoadTexture("./images/espadabranca_fullhd.png");
-    SetTextureFilter(menuBackground, TEXTURE_FILTER_POINT); // Remove o efeito de blur
-    
+
+    Texture2D menuBackground = LoadTexture("./images/backgroundMenu.png");
+    SetTextureFilter(menuBackground, TEXTURE_FILTER_POINT);
+
     Music menuMusic = LoadMusicStream("./music/significance.mp3");
     SetMusicVolume(menuMusic, 0.5f);
     PlayMusicStream(menuMusic);
@@ -595,7 +595,7 @@ tela Menu(void) {
     int spacing = 40;
     int totalHeight = quantOpcoes * spacing;
     int startY = (altura - totalHeight) / 2;
-    int titleY = startY - 60; // Nova posição vertical do título
+    int titleY = startY - 60;
 
     while (!WindowShouldClose()) {
         UpdateMusicStream(menuMusic);
@@ -621,10 +621,8 @@ tela Menu(void) {
 
         BeginDrawing();
             ClearBackground(RAYWHITE);
+            DrawTexture(menuBackground, 0, 0, WHITE);
 
-            DrawTexture(menuBackground, 0, 0, WHITE); // Fundo sem efeito de blur
-
-            // Centraliza "Menu Principal" horizontalmente e posiciona acima das opções
             DrawText("Menu Principal", (largura - MeasureText("Menu Principal", 30)) / 2, titleY, 30, DARKBLUE);
 
             for (int i = 0; i < quantOpcoes; i++) {
@@ -635,20 +633,24 @@ tela Menu(void) {
                 DrawText(menuOptions[i], posX, posY, fontSize, color);
             }
 
+            // Área de instruções ou ranking ao lado (à direita)
             if (selectedOption == 1) {
-                DrawText("Instruções", (largura * 3 / 4 - MeasureText("Instruções", 30) / 2), 50, 30, DARKBLUE);
-                DrawText("Use W-A-D para movimentar o personagem.", largura / 2 + 20, 150, 17, BLACK);
-                DrawText("Use as setas para disparar.", largura / 2 + 20, 190, 17, BLACK);
-                DrawText("Aperte ESC para parar de jogar.", largura / 2 + 20, 230, 17, BLACK);
+                int infoX = largura * 3 / 4;
+                DrawText("Instruções", infoX - MeasureText("Instruções", 30) / 2, startY - 60, 30, DARKBLUE);
+                DrawText("Use W-A-D para movimentar o personagem.", infoX - MeasureText("Use W-A-D para movimentar o personagem.", 17) / 2, startY, 17, WHITE);
+                DrawText("Use as setas para disparar.", infoX - MeasureText("Use as setas para disparar.", 17) / 2, startY + 30, 17, WHITE);
+                DrawText("Aperte ESC para parar de jogar.", infoX - MeasureText("Aperte ESC para parar de jogar.", 17) / 2, startY + 60, 17, WHITE);
             } else if (selectedOption == 2) {
-                DrawText("Ranking", (largura * 3 / 4 - MeasureText("Ranking", 30) / 2), 50, 30, DARKBLUE);
-                DrawText("Top 10 melhores pontuações!", largura / 2 + 20, 130, 17, BLACK);
-                for(int i = 0; i < numRanking; i++){
+                int infoX = largura * 3 / 4;
+                DrawText("Ranking", infoX - MeasureText("Ranking", 30) / 2, startY - 60, 30, DARKBLUE);
+                DrawText("Top 10 melhores pontuações!", infoX - MeasureText("Top 10 melhores pontuações!", 17) / 2, startY - 30, 17, WHITE);
+                for (int i = 0; i < numRanking; i++) {
                     char text[100];
                     snprintf(text, sizeof(text), "%d. %s - %d", i + 1, ranking[i].name, ranking[i].score);
-                    DrawText(text, largura / 2 + 20, 160 + i * 25, 17, BLACK);
+                    DrawText(text, infoX - MeasureText(text, 17) / 2, startY + i * 25, 17, WHITE);
                 }
             }
+
         EndDrawing();
     }
 

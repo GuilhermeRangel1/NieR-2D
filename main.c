@@ -1,3 +1,4 @@
+
 #include "raylib.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -449,9 +450,20 @@ int jogo(void) {
         BeginDrawing();
         ClearBackground(RAYWHITE);
         
-        if(salaAtual == sala5){
-    DrawTextureEx(salaAtual->background, (Vector2){-20, 10}, 0.0f, 1.05f, RAYWHITE);
-}else{
+       if(salaAtual == sala5) {
+    // Para a sala do boss, calculamos a proporção correta para preencher a tela
+    float scaleX = (float)GetScreenWidth() / salaAtual->background.width;
+    float scaleY = (float)GetScreenHeight() / salaAtual->background.height;
+    float scale = fmaxf(scaleX, scaleY);  // Usamos fmaxf para preencher toda a tela
+    
+    Vector2 pos = {
+        (GetScreenWidth() - (salaAtual->background.width * scale)) * 0.5f,
+        (GetScreenHeight() - (salaAtual->background.height * scale)) * 0.5f
+    };
+    
+    DrawTextureEx(salaAtual->background, pos, 0.0f, scale, WHITE);
+} else {
+    // Para outras salas
     Rectangle dest = {
         0, 
         0, 
@@ -492,7 +504,7 @@ int jogo(void) {
         Vector2 origin = {0, 0};
         DrawTexturePro(currentAnim->texture, sourceRec, destRec, origin, 0.0f, WHITE);
         
-        float desiredEnemyHeight = 180.0f;
+        float desiredEnemyHeight = 200.0f;
         float escalaInimigo = ((desiredEnemyHeight) / (float)enemyAnim.texture.height);
         
         if (salaAtual->inimigoVivo) {
@@ -502,13 +514,36 @@ int jogo(void) {
                 enemyAnim.virado ? -enemyAnim.larguraFrame : enemyAnim.larguraFrame,
                 (float)enemyAnim.texture.height
             };
+            
+     
+            
             Rectangle enemyDestRec = {
-                salaAtual->enemy.x,
-                salaAtual->enemy.y - (enemyAnim.texture.height - salaAtual->enemy.height), 
-                enemyAnim.larguraFrame * escalaInimigo,            
-                (float)enemyAnim.texture.height * escalaInimigo 
+                salaAtual->enemy.x - 70,
+                salaAtual->enemy.y - 70,
+                enemyAnim.larguraFrame * escalaInimigo,
+                enemyAnim.texture.height * escalaInimigo
             };
             DrawTexturePro(enemyAnim.texture, enemySourceRec, enemyDestRec, (Vector2){0, 0}, 0.0f, WHITE);
+          
+            
+            /*
+            teste de hitbox, voce so precisa descomentar para testar
+            DrawRectangleLines(
+                (int)salaAtual->enemy.x,
+                (int)salaAtual->enemy.y,
+                (int)salaAtual->enemy.width,
+                (int)salaAtual->enemy.height,
+                RED
+                );
+
+// Hitbox visual do sprite animado (enemyAnim->hitbox) — VERDE
+            DrawRectangleLines(
+                (int)salaAtual->enemyAnim->hitbox.x,
+                (int)salaAtual->enemyAnim->hitbox.y,
+                (int)salaAtual->enemyAnim->hitbox.width,
+                (int)salaAtual->enemyAnim->hitbox.height,
+            GREEN
+                );*/
         }
 
         for (int i = 0; i < maxBalas; i++) if (balas[i].ativa) DrawRectangleRec(balas[i].rect, BLACK);
@@ -545,7 +580,7 @@ int jogo(void) {
 tela Menu(void) {
     InitAudioDevice();
     
-    Texture2D menuBackground = LoadTexture("./images/backgroundMenu.png");
+    Texture2D menuBackground = LoadTexture("./images/espadabranca_fullhd.png");
     SetTextureFilter(menuBackground, TEXTURE_FILTER_POINT); // Remove o efeito de blur
     
     Music menuMusic = LoadMusicStream("./music/significance.mp3");
@@ -622,6 +657,7 @@ tela Menu(void) {
     UnloadTexture(menuBackground);
     return SAIR;
 }
+
 void salvarPontos(const char *name, int score) {
     if (name == NULL) {
         return;
@@ -745,7 +781,7 @@ Sala* criarSala(int id) {
     } else if (id == 2) {
         sala->background = LoadTexture("./images/background.png");
         sala->inimigoVivo = true;
-        sala->enemy = (Rectangle){600, 1080 - 220, 125, 50};
+        sala->enemy = (Rectangle){600, 1080 - 250, 50, 120};
         sala->vidaInimigo = 70;
         sala->enemyAnim = initEnemyAnimation();
         sala->plataforma[0] = (Rectangle){100, 800, 400, 30};
@@ -753,7 +789,7 @@ Sala* criarSala(int id) {
     } else if (id == 3) {
         sala->background = LoadTexture("./images/background.png");
         sala->inimigoVivo = true;
-        sala->enemy = (Rectangle){600, 1080 - 220, 125, 50};
+        sala->enemy = (Rectangle){600, 1080 - 250, 50, 120};
         sala->vidaInimigo = 70;
         sala->enemyAnim = initEnemyAnimation();
         sala->plataforma[0] = (Rectangle){500, 800, 350, 30};
@@ -761,7 +797,7 @@ Sala* criarSala(int id) {
     } else if (id == 4) {
         sala->background = LoadTexture("./images/background.png");
         sala->inimigoVivo = true;
-        sala->enemy = (Rectangle){600, 1080 - 220, 125, 50};
+        sala->enemy = (Rectangle){600, 1080 - 250, 50, 120};
         sala->vidaInimigo = 70;
         sala->enemyAnim = initEnemyAnimation();
         sala->plataforma[0] = (Rectangle){200, 800, 300, 30};
@@ -822,6 +858,11 @@ void updateEnemyAnimation(Sala* salaAtual, Rectangle player) {
     
     enemyAnim->position.x = salaAtual->enemy.x;
     enemyAnim->position.y = salaAtual->enemy.y;
+    
+    salaAtual->enemy.x = enemyAnim->position.x;
+    salaAtual->enemy.y = enemyAnim->position.y;
+    salaAtual->enemy.width  = enemyAnim->hitbox.width;
+    salaAtual->enemy.height = enemyAnim->hitbox.height;
     
     enemyAnim->virado = (salaAtual->enemy.x > player.x);
     

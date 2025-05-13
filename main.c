@@ -153,7 +153,7 @@ int jogo(void) {
     Sala* salaAtual = sala1;
 
 
-    Rectangle player = {100, altura - 120, 60, 90};
+    Rectangle player = {100, altura - 250, 60, 90};
     Vector2 playerSpeed = {0, 0};
     int enemyDiedCount = 0;
     int score;
@@ -451,10 +451,9 @@ int jogo(void) {
         ClearBackground(RAYWHITE);
         
        if(salaAtual == sala5) {
-    // Para a sala do boss, calculamos a proporção correta para preencher a tela
     float scaleX = (float)GetScreenWidth() / salaAtual->background.width;
     float scaleY = (float)GetScreenHeight() / salaAtual->background.height;
-    float scale = fmaxf(scaleX, scaleY);  // Usamos fmaxf para preencher toda a tela
+    float scale = fmaxf(scaleX, scaleY);  
     
     Vector2 pos = {
         (GetScreenWidth() - (salaAtual->background.width * scale)) * 0.5f,
@@ -463,7 +462,6 @@ int jogo(void) {
     
     DrawTextureEx(salaAtual->background, pos, 0.0f, scale, WHITE);
 } else {
-    // Para outras salas
     Rectangle dest = {
         0, 
         0, 
@@ -526,8 +524,7 @@ int jogo(void) {
             DrawTexturePro(enemyAnim.texture, enemySourceRec, enemyDestRec, (Vector2){0, 0}, 0.0f, WHITE);
           
             
-            /*
-            teste de hitbox, voce so precisa descomentar para testar
+
             DrawRectangleLines(
                 (int)salaAtual->enemy.x,
                 (int)salaAtual->enemy.y,
@@ -536,21 +533,18 @@ int jogo(void) {
                 RED
                 );
 
-// Hitbox visual do sprite animado (enemyAnim->hitbox) — VERDE
+
             DrawRectangleLines(
                 (int)salaAtual->enemyAnim->hitbox.x,
                 (int)salaAtual->enemyAnim->hitbox.y,
                 (int)salaAtual->enemyAnim->hitbox.width,
                 (int)salaAtual->enemyAnim->hitbox.height,
             GREEN
-                );*/
+                );
         }
 
         for (int i = 0; i < maxBalas; i++) if (balas[i].ativa) DrawRectangleRec(balas[i].rect, BLACK);
         for (int i = 0; i < maxBalasInimigo; i++) if (salaAtual->balasInimigo[i].ativa) DrawRectangleRec(salaAtual->balasInimigo[i].rect, WHITE);
-        
-        int minutes = (int)(countdownTime / 60);
-        int seconds = (int)(countdownTime) % 60;
 
         DrawText(TextFormat("Vidas: %d", playerLife), 10, 10, 20, WHITE);
         EndDrawing();

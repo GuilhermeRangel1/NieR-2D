@@ -100,7 +100,6 @@ void freeSala(Sala* sala);
 void vitoria();
 void desenharInimigo(Sala* salaAtual);
 
-
 int main(void) {
     InitWindow(largura, altura, "Nier: 2D");
     SetTargetFPS(60);
@@ -150,8 +149,6 @@ int jogo(void) {
     sala5->esquerda = sala4;
 
     Sala* salaAtual = sala1;
-
-
     Rectangle player = {100, altura - 250, 60, 90};
     Vector2 playerSpeed = {0, 0};
     int enemyDiedCount = 0;
@@ -567,7 +564,7 @@ int jogo(void) {
 tela Menu(void) {
     InitAudioDevice();
 
-    Texture2D menuBackground = LoadTexture("./images/backgroundMenu.png");
+    Texture2D menuBackground = LoadTexture("./images/backgroundMenu.jpeg");
     SetTextureFilter(menuBackground, TEXTURE_FILTER_POINT);
 
     Music menuMusic = LoadMusicStream("./music/significance.mp3");
@@ -581,8 +578,8 @@ tela Menu(void) {
     int fontSize = 20;
     int spacing = 40;
     int totalHeight = quantOpcoes * spacing;
-    int startY = (altura - totalHeight) / 2;
-    int titleY = startY - 60;
+    int startY = (altura - totalHeight) / 2 + 60; 
+    int titleY = startY - 180;
 
     while (!WindowShouldClose()) {
         UpdateMusicStream(menuMusic);
@@ -610,30 +607,31 @@ tela Menu(void) {
             ClearBackground(RAYWHITE);
             DrawTexture(menuBackground, 0, 0, WHITE);
 
-            DrawText("Menu Principal", (largura - MeasureText("Menu Principal", 30)) / 2, titleY, 30, DARKBLUE);
+            DrawText("NieR: 2D", (largura - MeasureText("NieR: 2D", 40)) / 2, titleY, 40, WHITE);
+            DrawText("Menu Principal", (largura - MeasureText("Menu Principal", 30)) / 2, titleY + 60, 30, DARKBLUE); 
 
             for (int i = 0; i < quantOpcoes; i++) {
                 Color color = (i == selectedOption) ? RED : WHITE;
                 int textWidth = MeasureText(menuOptions[i], fontSize);
                 int posX = (largura - textWidth) / 2;
-                int posY = startY + i * spacing;
+                int posY = startY - 60 + i * spacing; 
                 DrawText(menuOptions[i], posX, posY, fontSize, color);
             }
 
             if (selectedOption == 1) {
                 int infoX = largura * 3 / 4;
-                DrawText("Instruções", infoX - MeasureText("Instruções", 30) / 2, startY - 60, 30, DARKBLUE);
-                DrawText("Use W-A-D para movimentar o personagem.", infoX - MeasureText("Use W-A-D para movimentar o personagem.", 17) / 2, startY, 17, WHITE);
-                DrawText("Use as setas para disparar.", infoX - MeasureText("Use as setas para disparar.", 17) / 2, startY + 30, 17, WHITE);
-                DrawText("Aperte ESC para parar de jogar.", infoX - MeasureText("Aperte ESC para parar de jogar.", 17) / 2, startY + 60, 17, WHITE);
+                DrawText("Instruções", infoX - MeasureText("Instruções", 30) / 2, startY - 180, 30, DARKBLUE);
+                DrawText("Use W-A-D para movimentar o personagem.", infoX - MeasureText("Use W-A-D para movimentar o personagem.", 17) / 2, startY - 120, 17, WHITE);
+                DrawText("Use as setas para disparar.", infoX - MeasureText("Use as setas para disparar.", 17) / 2, startY - 90, 17, WHITE);
+                DrawText("Aperte ESC para parar de jogar.", infoX - MeasureText("Aperte ESC para parar de jogar.", 17) / 2, startY - 60, 17, WHITE);
             } else if (selectedOption == 2) {
                 int infoX = largura * 3 / 4;
-                DrawText("Ranking", infoX - MeasureText("Ranking", 30) / 2, startY - 60, 30, DARKBLUE);
-                DrawText("Top 10 melhores pontuações!", infoX - MeasureText("Top 10 melhores pontuações!", 17) / 2, startY - 30, 17, WHITE);
+                DrawText("Ranking", infoX - MeasureText("Ranking", 30) / 2, startY - 180, 30, DARKBLUE);
+                DrawText("Top 10 melhores pontuações!", infoX - MeasureText("Top 10 melhores pontuações!", 17) / 2, startY - 150, 17, WHITE);
                 for (int i = 0; i < numRanking; i++) {
                     char text[100];
                     snprintf(text, sizeof(text), "%d. %s - %d", i + 1, ranking[i].name, ranking[i].score);
-                    DrawText(text, infoX - MeasureText(text, 17) / 2, startY + i * 25, 17, WHITE);
+                    DrawText(text, infoX - MeasureText(text, 17) / 2, startY - 120 + i * 25, 17, WHITE);
                 }
             }
 
@@ -894,6 +892,5 @@ void desenharInimigo(Sala* salaAtual) {
         0.0f,
         WHITE
     );
-    
     
 }

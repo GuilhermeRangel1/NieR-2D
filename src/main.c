@@ -478,8 +478,24 @@ int jogo(void) {
         WHITE
     );
 }
-    DrawRectangleRec(salaAtual->plataforma[0], BROWN);
-    DrawRectangleRec(salaAtual->plataforma[1], BROWN);
+        DrawRectangleRec((Rectangle){
+            salaAtual->plataforma[0].x - 2,
+            salaAtual->plataforma[0].y - 2,
+            salaAtual->plataforma[0].width + 4,
+            salaAtual->plataforma[0].height + 4
+        }, BLACK);
+
+        DrawRectangleRec(salaAtual->plataforma[0], BROWN);
+
+        DrawRectangleRec((Rectangle){
+            salaAtual->plataforma[1].x - 2,
+            salaAtual->plataforma[1].y - 2,
+            salaAtual->plataforma[1].width + 4,
+            salaAtual->plataforma[1].height + 4
+        }, BLACK);
+
+        DrawRectangleRec(salaAtual->plataforma[1], BROWN);
+
         Rectangle sourceRec = {
             currentAnim->larguraFrame * currentAnim->frameAtual,
             0,
@@ -760,7 +776,7 @@ Sala* criarSala(int id) {
         sala->enemy = (Rectangle){600, 1080 - 250, 50, 120};
         sala->vidaInimigo = 70;
         sala->enemyAnim = initEnemyAnimation();
-        sala->plataforma[0] = (Rectangle){100, 800, 400, 30};
+        sala->plataforma[0] = (Rectangle){300, 800, 400, 30};
         sala->plataforma[1] = (Rectangle){1400, 750, 150, 30};
     } else if (id == 3) {
         sala->background = LoadTexture("./images/background.png");
@@ -777,7 +793,7 @@ Sala* criarSala(int id) {
         sala->vidaInimigo = 70;
         sala->enemyAnim = initEnemyAnimation();
         sala->plataforma[0] = (Rectangle){200, 800, 300, 30};
-        sala->plataforma[1] = (Rectangle){500, 750, 200, 30};
+        sala->plataforma[1] = (Rectangle){900, 750, 200, 30};
     } else if (id == 5) {
         sala->background = LoadTexture("./images/finalboss.png");
         sala->inimigoVivo = true;
@@ -785,8 +801,8 @@ Sala* criarSala(int id) {
         sala->vidaInimigo = 100;
         sala->enemyAnim = initEnemyAnimation();
         sala->enemyAnim->maxFrames = 8;
-        sala->plataforma[0] = (Rectangle){400, 850, 300, 30};
-        sala->plataforma[1] = (Rectangle){1200, 750, 300, 30};
+        sala->plataforma[0] = (Rectangle){800, 750, 200, 30};
+        sala->plataforma[1] = (Rectangle){1000, 750, 200, 30};
     }
 
     return sala;

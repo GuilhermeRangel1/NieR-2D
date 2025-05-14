@@ -1,5 +1,4 @@
-
-#include "raylib.h"
+#include "raylib.h" 
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -7,9 +6,7 @@
 #include <unistd.h>
 #include <string.h>
 #include "gemini.h"
-#include <curl/curl.h>
 #include "cJSON.h"
-
 #define VOLUME 0.5f
 #define quantOpcoes 4
 #define gravidade 500.0f
@@ -525,25 +522,6 @@ int jogo(void) {
                 enemyAnim.texture.height * escalaInimigo
             };
             DrawTexturePro(enemyAnim.texture, enemySourceRec, enemyDestRec, (Vector2){0, 0}, 0.0f, WHITE);
-          
-            
-
-            DrawRectangleLines(
-                (int)salaAtual->enemy.x,
-                (int)salaAtual->enemy.y,
-                (int)salaAtual->enemy.width,
-                (int)salaAtual->enemy.height,
-                RED
-                );
-
-
-            DrawRectangleLines(
-                (int)salaAtual->enemyAnim->hitbox.x,
-                (int)salaAtual->enemyAnim->hitbox.y,
-                (int)salaAtual->enemyAnim->hitbox.width,
-                (int)salaAtual->enemyAnim->hitbox.height,
-            GREEN
-                );
         }
 
         for (int i = 0; i < maxBalas; i++) if (balas[i].ativa) DrawRectangleRec(balas[i].rect, BLACK);
@@ -630,7 +608,6 @@ tela Menu(void) {
                 DrawText(menuOptions[i], posX, posY, fontSize, color);
             }
 
-            // Área de instruções ou ranking ao lado (à direita)
             if (selectedOption == 1) {
                 int infoX = largura * 3 / 4;
                 DrawText("Instruções", infoX - MeasureText("Instruções", 30) / 2, startY - 60, 30, DARKBLUE);

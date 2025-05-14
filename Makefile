@@ -1,17 +1,19 @@
-TARGET = nier
+TARGET = app
 
-CC = gcc
+SRC_DIR = src
+INCLUDE_DIR = include
+LIB_DIR = lib_raylib
+RELEASE_DIR = bin
 
-CFLAGS = -Wall -g
+SOURCES = $(wildcard $(SRC_DIR)/*.c)
 
-INCLUDES = -I/usr/local/include -I./curl/include
+CFLAGS = -Wall -std=c99 -I$(INCLUDE_DIR) -Icurl/include
+LIBS = -L$(LIB_DIR) -Lcurl/lib -lraylib -lcurl -lopengl32 -lgdi32 -lwinmm
+BIN_TARGET = $(RELEASE_DIR)/$(TARGET).exe
 
-LIBS = -lraylib -lm -lpthread -ldl -lrt -lX11 -lcurl -lws2_32 -lwinssl -lcrypt32
+$(BIN_TARGET): $(SOURCES)
+	@mkdir -p $(RELEASE_DIR)
+	gcc $(CFLAGS) $(SOURCES) -o $@ $(LIBS)
 
-SRCS = main.c gemini.c cJSON.c
-
-$(TARGET): $(SRCS)
-	$(CC) $(CFLAGS) $(INCLUDES) $(SRCS) -o $(TARGET) $(LIBS)
-
-clean:
-	rm -f $(TARGET)
+run: $(BIN_TARGET)
+	./$<

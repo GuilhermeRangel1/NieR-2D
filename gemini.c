@@ -6,7 +6,6 @@
 #include "gemini.h"
 
 #define API_KEY "KEY"
-
 #define MAX_RESPOSTA  1024
 
 typedef struct {

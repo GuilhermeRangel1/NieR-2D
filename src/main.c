@@ -11,9 +11,9 @@
 #define quantOpcoes 4
 #define gravidade 500.0f
 #define pulo -450.0f
-#define velocidadePlayer 400.0f
+#define velocidadePlayer 350.0f
 #define velocidadeBala 500.0f
-#define velocidadeInimigo 160.0f
+#define velocidadeInimigo 220.0f
 #define velocidadeBoss 100.0f
 #define quantRecordes 10
 #define maxBalas 15
@@ -129,11 +129,10 @@ int jogo(void) {
     Music music = LoadMusicStream("./music/amoessamusica.mp3");
     Sound victory = LoadSound("./sounds/fimFase.mp3");
     Sound defeat = LoadSound("./sounds/lego-yoda-death-sound-effect.mp3");
-    Sound enemyMage = LoadSound("./sounds/Retro Event 19.wav");
-    Sound enemyHowl = LoadSound("./sounds/Robot2.mp3");
+    Sound enemyRobot = LoadSound("./sounds/Robot2.mp3");
     Sound playerShoot = LoadSound("./sounds/tiro.mp3");
     SetSoundVolume(playerShoot, VOLUME);
-    SetSoundVolume(enemyHowl,1.0f);
+    SetSoundVolume(enemyRobot,1.0f);
     InitWindow(largura, altura, "Nier: 2D");
     
     Sala* sala1 = criarSala(1);
@@ -323,9 +322,7 @@ int jogo(void) {
                 if (salaAtual->direita) {
                     salaAtual = salaAtual->direita;
                     if((salaAtual->inimigoVivo == true) && (salaAtual != sala5)){
-                        PlaySound(enemyHowl);
-                    }else if((salaAtual->inimigoVivo == true) && (salaAtual == sala5)){
-                        PlaySound(enemyMage);
+                        PlaySound(enemyRobot);
                     }
                     player.x = 0;
                     
@@ -556,8 +553,7 @@ int jogo(void) {
     UnloadTexture(enemyAnim.texture);
     
     freeSala(sala1);
-    UnloadSound(enemyMage);
-    UnloadSound(enemyHowl);
+    UnloadSound(enemyRobot);
     UnloadSound(playerShoot);
     UnloadSound(victory);
     UnloadSound(defeat);
@@ -774,7 +770,7 @@ Sala* criarSala(int id) {
         sala->background = LoadTexture("./images/background.png");
         sala->inimigoVivo = true;
         sala->enemy = (Rectangle){600, 1080 - 250, 50, 120};
-        sala->vidaInimigo = 70;
+        sala->vidaInimigo = 50;
         sala->enemyAnim = initEnemyAnimation();
         sala->plataforma[0] = (Rectangle){300, 800, 400, 30};
         sala->plataforma[1] = (Rectangle){1400, 750, 150, 30};
@@ -782,7 +778,7 @@ Sala* criarSala(int id) {
         sala->background = LoadTexture("./images/background.png");
         sala->inimigoVivo = true;
         sala->enemy = (Rectangle){600, 1080 - 250, 50, 120};
-        sala->vidaInimigo = 70;
+        sala->vidaInimigo = 50;
         sala->enemyAnim = initEnemyAnimation();
         sala->plataforma[0] = (Rectangle){500, 800, 350, 30};
         sala->plataforma[1] = (Rectangle){1100, 750, 250, 30};
@@ -790,7 +786,7 @@ Sala* criarSala(int id) {
         sala->background = LoadTexture("./images/background.png");
         sala->inimigoVivo = true;
         sala->enemy = (Rectangle){600, 1080 - 250, 50, 120};
-        sala->vidaInimigo = 70;
+        sala->vidaInimigo = 50;
         sala->enemyAnim = initEnemyAnimation();
         sala->plataforma[0] = (Rectangle){200, 800, 300, 30};
         sala->plataforma[1] = (Rectangle){900, 750, 200, 30};

@@ -149,7 +149,7 @@ int jogo(void) {
     sala5->esquerda = sala4;
 
     Sala* salaAtual = sala1;
-    Rectangle player = {100, altura - 250, 60, 90};
+    Rectangle player = {100, 300, 60, 90};
     Vector2 playerSpeed = {0, 0};
     int enemyDiedCount = 0;
     int score;

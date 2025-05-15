@@ -64,7 +64,7 @@ Agora que tudo está configurado, você pode compilar e iniciar sua aventura em 
 ```bash
 make run
 ```
-## 🔩 Algoritmos de Estrutura de Dados Usados
+## 🔩 Algoritmos e Estrutura de Dados Usados
 
 No projeto NieR:2D usamos o método de ordenação Bubble Sort V0, no qual é usado a ordenação sem uso de Flags e feitas comparações e trocas de forma unidirecional, do começo ao fim. Fizemos uso dela justamente por ter um número baixo de recordes gravados no arquivo txt Rankings, sendo limitado apenas a 10 recordes. Já quando falamos de algoritmos de estrutura de dados, fizemos uso de listas duplamente encadeadas nas fases, ou salas do jogo. Permitindo ao player que avance até a última sala, onde encontrará o final boss. Para fazer a verificação dentro de jogo que é de fato duplamente encadeada, basta apenas, quando matar o inimigo, retornar a fase, anterior que o cenário anterior vai reaparecer normalmente.
 

@@ -399,30 +399,39 @@ int jogo(void) {
             }
         }
 
-        if (IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_UP)) {
-            PlaySound(playerShoot);
-            for (int i = 0; i < maxBalas; i++) {
-                if (!balas[i].ativa) {
-                    balas[i].rect.x = player.x + player.width;
-                    balas[i].rect.y = player.y + (player.height / 6) - 20;
-                    balas[i].rect.width = 10;
-                    balas[i].rect.height = 5;
+if (IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_UP)) {
+    for (int i = 0; i < maxBalas; i++) {
+        if (!balas[i].ativa) {
+            // Posição X (mantida)
+            balas[i].rect.x = player.x + (currentAnim->virado ? -10.0f : player.width + 5.0f);
+            
+            // ★★★ POSIÇÃO Y PERFEITA ★★★
+            balas[i].rect.y = player.y + (player.height * 0.18f) - 7.0f;  // Altura ideal
+        
+            // Dimensões
+            balas[i].rect.width = 10;
+            balas[i].rect.height = (IsKeyPressed(KEY_UP)) ? 10 : 5;
 
-                    if (IsKeyPressed(KEY_RIGHT)) {
-                        balas[i].ativa = true;
-                        balas[i].speed = (Vector2){velocidadeBala, 0};
-                    } else if (IsKeyPressed(KEY_LEFT)) {
-                        balas[i].ativa = true;
-                        balas[i].speed = (Vector2){-velocidadeBala, 0};
-                    } else if (IsKeyPressed(KEY_UP)) {
-                        balas[i].ativa = true;
-                        balas[i].speed = (Vector2){0, -velocidadeBala};
-                        balas[i].rect.height = 10;
-                    }
-                    break;
-                }
+            // Direção (mantido)
+            if (IsKeyPressed(KEY_RIGHT) && !currentAnim->virado) {
+                PlaySound(playerShoot);
+                balas[i].ativa = true;
+                balas[i].speed = (Vector2){velocidadeBala, 0};
+            } 
+            else if (IsKeyPressed(KEY_LEFT) && currentAnim->virado) {
+                PlaySound(playerShoot);
+                balas[i].ativa = true;
+                balas[i].speed = (Vector2){-velocidadeBala, 0};
             }
+            else if (IsKeyPressed(KEY_UP)) {
+                PlaySound(playerShoot);
+                balas[i].ativa = true;
+                balas[i].speed = (Vector2){0, -velocidadeBala};
+            }
+            break;
         }
+    }
+}
 
         for (int i = 0; i < maxBalas; i++) {
             if (balas[i].ativa) {

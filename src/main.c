@@ -14,7 +14,7 @@
 #define velocidadePlayer 350.0f
 #define velocidadeBala 500.0f
 #define velocidadeInimigo 220.0f
-#define velocidadeBoss 100.0f
+#define velocidadeBoss 160.0f
 #define quantRecordes 10
 #define maxBalas 15
 #define maxBalasInimigo 100
@@ -100,6 +100,34 @@ void freeSala(Sala* sala);
 void vitoria();
 void desenharInimigo(Sala* salaAtual);
 
+int* extrair_numeros(const char *resposta) {
+    int *arrayBoss = malloc(300 * sizeof(int));
+    if (!arrayBoss) {
+        fprintf(stderr, "Erro ao alocar memória\n");
+        return NULL;
+    }
+
+    int j = 0;
+    const char *ptr = resposta;
+
+    while (*ptr && j < 300) {
+        
+        while (*ptr == ' ') ptr++;
+
+        if (*ptr >= '0' && *ptr <= '3') {
+            arrayBoss[j++] = *ptr - '0';
+            ptr++;
+        }
+
+        
+        while (*ptr && *ptr != ' ') ptr++;
+    }
+
+    return arrayBoss;
+}
+
+int *arrayBoss = NULL;
+
 int main(void) {
     InitWindow(largura, altura, "Nier: 2D");
     SetTargetFPS(60);
@@ -161,9 +189,9 @@ int jogo(void) {
 
     srand(time(NULL));
     SetTargetFPS(60);
-    bool movingRight = true;
     double countdownTime = 600.0;
-    
+    double ultimoMovBoss = countdownTime;
+      
     PlayMusicStream(music);
     
     lvlMusic = music;
@@ -192,12 +220,14 @@ int jogo(void) {
     jumpAnim.maxFrames = 4;
     
     Animation enemyAnim = {
-        LoadTexture("./assets/Walk.png"),
+        LoadTexture("./assets/Fly.png"),
         0, 0, 0, 0.0f, false
     };
-    enemyAnim.larguraFrame = (float)(enemyAnim.texture.width / 8);
-    enemyAnim.maxFrames = 8;
-
+    enemyAnim.larguraFrame = (float)(enemyAnim.texture.width / 4);
+    enemyAnim.maxFrames = 4;
+    int movAtual = 0;
+    int randMov = 0;
+    
     while (!WindowShouldClose()) {
         UpdateMusicStream(lvlMusic);
         
@@ -348,19 +378,30 @@ int jogo(void) {
             }
             
             if (salaAtual->id == 5) {
+                
                 if(IsMusicStreamPlaying(music)){
                     StopMusicStream(lvlMusic);
                     lvlMusic = musicBoss;
                     PlayMusicStream(lvlMusic);
                 }
-                if (movingRight) {
-                    salaAtual->enemy.x += velocidadeBoss * GetFrameTime();
-                    if (salaAtual->enemy.x + salaAtual->enemy.width >= largura) movingRight = false;
-                } else {
-                    salaAtual->enemy.x -= velocidadeBoss * GetFrameTime();
-                    if (salaAtual->enemy.x <= 0) movingRight = true;
-                }
-
+                
+                if (ultimoMovBoss > countdownTime + 3) {
+                    ultimoMovBoss = countdownTime;
+                    randMov = arrayBoss[movAtual];
+                    movAtual++;
+                }   
+                if (randMov == 1) {
+                    if(!(salaAtual->enemy.x + salaAtual->enemy.width + velocidadeBoss * GetFrameTime()>= largura)) salaAtual->enemy.x += velocidadeBoss * GetFrameTime();
+                } 
+                else if (randMov == 2) {
+                    if (!(salaAtual->enemy.x - velocidadeBoss * GetFrameTime() <= 0)) salaAtual->enemy.x -= velocidadeBoss * GetFrameTime();
+                } 
+                else if (randMov == 0) {
+                    if (!(salaAtual->enemy.y - salaAtual->enemy.height - velocidadeBoss * GetFrameTime() <= 0)) salaAtual->enemy.y -= velocidadeBoss * GetFrameTime();
+                } 
+                else if (randMov == 3) {
+                     if (!(salaAtual->enemy.y + velocidadeBoss * GetFrameTime() >= 260)) salaAtual->enemy.y += velocidadeBoss * GetFrameTime();
+                }  
                 if (rand() % 8 == 0) {
                     for (int i = 0; i < maxBalasInimigo; i++) {
                         if (!salaAtual->balasInimigo[i].ativa) {
@@ -399,39 +440,30 @@ int jogo(void) {
             }
         }
 
-if (IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_UP)) {
-    for (int i = 0; i < maxBalas; i++) {
-        if (!balas[i].ativa) {
-            
-            balas[i].rect.x = player.x + (currentAnim->virado ? -10.0f : player.width + 5.0f);
-            
-        
-            balas[i].rect.y = player.y + (player.height * 0.18f) - 7.0f;  
-        
-            
-            balas[i].rect.width = 10;
-            balas[i].rect.height = (IsKeyPressed(KEY_UP)) ? 10 : 5;
+        if (IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_UP)) {
+            PlaySound(playerShoot);
+            for (int i = 0; i < maxBalas; i++) {
+                if (!balas[i].ativa) {
+                    balas[i].rect.x = player.x + player.width;
+                    balas[i].rect.y = player.y + (player.height / 6) - 20;
+                    balas[i].rect.width = 10;
+                    balas[i].rect.height = 5;
 
-            
-            if (IsKeyPressed(KEY_RIGHT) && !currentAnim->virado) {
-                PlaySound(playerShoot);
-                balas[i].ativa = true;
-                balas[i].speed = (Vector2){velocidadeBala, 0};
-            } 
-            else if (IsKeyPressed(KEY_LEFT) && currentAnim->virado) {
-                PlaySound(playerShoot);
-                balas[i].ativa = true;
-                balas[i].speed = (Vector2){-velocidadeBala, 0};
+                    if (IsKeyPressed(KEY_RIGHT)) {
+                        balas[i].ativa = true;
+                        balas[i].speed = (Vector2){velocidadeBala, 0};
+                    } else if (IsKeyPressed(KEY_LEFT)) {
+                        balas[i].ativa = true;
+                        balas[i].speed = (Vector2){-velocidadeBala, 0};
+                    } else if (IsKeyPressed(KEY_UP)) {
+                        balas[i].ativa = true;
+                        balas[i].speed = (Vector2){0, -velocidadeBala};
+                        balas[i].rect.height = 10;
+                    }
+                    break;
+                }
             }
-            else if (IsKeyPressed(KEY_UP)) {
-                PlaySound(playerShoot);
-                balas[i].ativa = true;
-                balas[i].speed = (Vector2){0, -velocidadeBala};
-            }
-            break;
         }
-    }
-}
 
         for (int i = 0; i < maxBalas; i++) {
             if (balas[i].ativa) {
@@ -574,7 +606,12 @@ if (IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_UP)) {
     return score;
     
 }
+
 tela Menu(void) {
+    char *resposta = respt("me escreva 40 ints x sendo 0 <= x <= 3 numa ordem completamente aleatória,as vezes repetindo o numero anterior menos se este for 0, nesse formato: x x x x x x x x x..., somento isso, nada ale dos numeros");
+    arrayBoss = extrair_numeros(resposta);
+    printf("arrayBoss: %s \n", resposta);
+
     InitAudioDevice();
 
     Texture2D menuBackground = LoadTexture("./images/backgroundMenu.jpeg");
@@ -744,9 +781,9 @@ int contScore(pontuacao *ranking) {
 EnemyAnimation* initEnemyAnimation(void) {
     EnemyAnimation* enemyAnim = (EnemyAnimation*)malloc(sizeof(EnemyAnimation));
         
-    enemyAnim->texture = LoadTexture("./assets/Walk.png");
-    enemyAnim->larguraFrame = (float)(enemyAnim->texture.width /8);
-    enemyAnim->maxFrames = 8;
+    enemyAnim->texture = LoadTexture("./assets/Fly.png");
+    enemyAnim->larguraFrame = (float)(enemyAnim->texture.width /4);
+    enemyAnim->maxFrames = 4;
     enemyAnim->frameAtual = 0;
     enemyAnim->tempoFrame = 0.0f;
     enemyAnim->virado = true;
@@ -780,7 +817,7 @@ Sala* criarSala(int id) {
     } else if (id == 2) {
         sala->background = LoadTexture("./images/background.png");
         sala->inimigoVivo = true;
-        sala->enemy = (Rectangle){600, 1080 - 250, 50, 120};
+        sala->enemy = (Rectangle){600, 1080 - 250, 100, 180};
         sala->vidaInimigo = 1;
         sala->enemyAnim = initEnemyAnimation();
         sala->plataforma[0] = (Rectangle){300, 800, 400, 30};
@@ -788,7 +825,7 @@ Sala* criarSala(int id) {
     } else if (id == 3) {
         sala->background = LoadTexture("./images/background.png");
         sala->inimigoVivo = true;
-        sala->enemy = (Rectangle){600, 1080 - 250, 50, 120};
+        sala->enemy = (Rectangle){600, 1080 - 250, 100, 180};
         sala->vidaInimigo = 1;
         sala->enemyAnim = initEnemyAnimation();
         sala->plataforma[0] = (Rectangle){500, 800, 350, 30};
@@ -796,7 +833,7 @@ Sala* criarSala(int id) {
     } else if (id == 4) {
         sala->background = LoadTexture("./images/background.png");
         sala->inimigoVivo = true;
-        sala->enemy = (Rectangle){600, 1080 - 250, 50, 120};
+        sala->enemy = (Rectangle){600, 1080 - 250, 100, 180};
         sala->vidaInimigo = 1;
         sala->enemyAnim = initEnemyAnimation();
         sala->plataforma[0] = (Rectangle){200, 800, 300, 30};
@@ -804,7 +841,7 @@ Sala* criarSala(int id) {
     } else if (id == 5) {
         sala->background = LoadTexture("./images/finalboss.png");
         sala->inimigoVivo = true;
-        sala->enemy = (Rectangle){0, sala->teto.y + sala->teto.height, 200, 50};
+        sala->enemy = (Rectangle){960, sala->teto.y + sala->teto.height, 100, 180};
         sala->vidaInimigo = 100;
         sala->enemyAnim = initEnemyAnimation();
         sala->enemyAnim->maxFrames = 8;

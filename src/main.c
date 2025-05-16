@@ -818,7 +818,7 @@ Sala* criarSala(int id) {
         sala->background = LoadTexture("./images/background.png");
         sala->inimigoVivo = true;
         sala->enemy = (Rectangle){600, 1080 - 250, 100, 180};
-        sala->vidaInimigo = 1;
+        sala->vidaInimigo = 50;
         sala->enemyAnim = initEnemyAnimation();
         sala->plataforma[0] = (Rectangle){300, 800, 400, 30};
         sala->plataforma[1] = (Rectangle){1400, 750, 150, 30};
@@ -826,7 +826,7 @@ Sala* criarSala(int id) {
         sala->background = LoadTexture("./images/background.png");
         sala->inimigoVivo = true;
         sala->enemy = (Rectangle){600, 1080 - 250, 100, 180};
-        sala->vidaInimigo = 1;
+        sala->vidaInimigo = 50;
         sala->enemyAnim = initEnemyAnimation();
         sala->plataforma[0] = (Rectangle){500, 800, 350, 30};
         sala->plataforma[1] = (Rectangle){1100, 750, 250, 30};
@@ -834,12 +834,12 @@ Sala* criarSala(int id) {
         sala->background = LoadTexture("./images/background.png");
         sala->inimigoVivo = true;
         sala->enemy = (Rectangle){600, 1080 - 250, 100, 180};
-        sala->vidaInimigo = 1;
+        sala->vidaInimigo = 50;
         sala->enemyAnim = initEnemyAnimation();
         sala->plataforma[0] = (Rectangle){200, 800, 300, 30};
         sala->plataforma[1] = (Rectangle){900, 750, 200, 30};
     } else if (id == 5) {
-        sala->background = LoadTexture("./images/finalboss.png");
+        sala->background = LoadTexture("./images/background.png");
         sala->inimigoVivo = true;
         sala->enemy = (Rectangle){960, sala->teto.y + sala->teto.height, 100, 180};
         sala->vidaInimigo = 100;

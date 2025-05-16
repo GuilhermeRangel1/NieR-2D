@@ -453,17 +453,21 @@ if (IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_UP)) {
         BeginDrawing();
         ClearBackground(RAYWHITE);
         
-       if(salaAtual == sala5) {
-    float scaleX = (float)GetScreenWidth() / salaAtual->background.width;
-    float scaleY = (float)GetScreenHeight() / salaAtual->background.height;
-    float scale = fmaxf(scaleX, scaleY);  
-    
-    Vector2 pos = {
-        (GetScreenWidth() - (salaAtual->background.width * scale)) * 0.5f,
-        (GetScreenHeight() - (salaAtual->background.height * scale)) * 0.5f
-    };
-    
-    DrawTextureEx(salaAtual->background, pos, 0.0f, scale, WHITE);
+    if(salaAtual == sala5) {
+        Rectangle dest = {
+            0,
+            0,
+            (float)GetScreenWidth(),
+            (float)GetScreenHeight()
+        };
+        Rectangle source = {
+            0,
+            0,
+            (float)salaAtual->background.width,
+            (float)salaAtual->background.height
+        };
+        Vector2 origin = {0, 0};
+        DrawTexturePro(salaAtual->background, source, dest, origin, 0.0f, WHITE);
 } else {
     Rectangle dest = {
         0, 
@@ -777,7 +781,7 @@ Sala* criarSala(int id) {
         sala->background = LoadTexture("./images/background.png");
         sala->inimigoVivo = true;
         sala->enemy = (Rectangle){600, 1080 - 250, 50, 120};
-        sala->vidaInimigo = 50;
+        sala->vidaInimigo = 1;
         sala->enemyAnim = initEnemyAnimation();
         sala->plataforma[0] = (Rectangle){300, 800, 400, 30};
         sala->plataforma[1] = (Rectangle){1400, 750, 150, 30};
@@ -785,7 +789,7 @@ Sala* criarSala(int id) {
         sala->background = LoadTexture("./images/background.png");
         sala->inimigoVivo = true;
         sala->enemy = (Rectangle){600, 1080 - 250, 50, 120};
-        sala->vidaInimigo = 50;
+        sala->vidaInimigo = 1;
         sala->enemyAnim = initEnemyAnimation();
         sala->plataforma[0] = (Rectangle){500, 800, 350, 30};
         sala->plataforma[1] = (Rectangle){1100, 750, 250, 30};
@@ -793,7 +797,7 @@ Sala* criarSala(int id) {
         sala->background = LoadTexture("./images/background.png");
         sala->inimigoVivo = true;
         sala->enemy = (Rectangle){600, 1080 - 250, 50, 120};
-        sala->vidaInimigo = 50;
+        sala->vidaInimigo = 1;
         sala->enemyAnim = initEnemyAnimation();
         sala->plataforma[0] = (Rectangle){200, 800, 300, 30};
         sala->plataforma[1] = (Rectangle){900, 750, 200, 30};

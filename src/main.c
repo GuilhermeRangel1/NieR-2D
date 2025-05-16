@@ -100,6 +100,8 @@ void freeSala(Sala* sala);
 void vitoria();
 void desenharInimigo(Sala* salaAtual);
 
+    int arrayBoss[300];
+
 int main(void) {
     InitWindow(largura, altura, "Nier: 2D");
     SetTargetFPS(60);
@@ -163,7 +165,8 @@ int jogo(void) {
     SetTargetFPS(60);
     bool movingRight = true;
     double countdownTime = 600.0;
-    
+    double ultimoMovBoss = countdownTime;
+      
     PlayMusicStream(music);
     
     lvlMusic = music;
@@ -197,7 +200,13 @@ int jogo(void) {
     };
     enemyAnim.larguraFrame = (float)(enemyAnim.texture.width / 8);
     enemyAnim.maxFrames = 8;
-
+    
+    int randMov = 0;
+    int movAtual = 0;
+    
+    while (countdownTime > 595) {
+        countdownTime -= GetFrameTime();
+    }
     while (!WindowShouldClose()) {
         UpdateMusicStream(lvlMusic);
         
@@ -348,11 +357,13 @@ int jogo(void) {
             }
             
             if (salaAtual->id == 5) {
+                
                 if(IsMusicStreamPlaying(music)){
                     StopMusicStream(lvlMusic);
                     lvlMusic = musicBoss;
                     PlayMusicStream(lvlMusic);
                 }
+                /*
                 if (movingRight) {
                     salaAtual->enemy.x += velocidadeBoss * GetFrameTime();
                     if (salaAtual->enemy.x + salaAtual->enemy.width >= largura) movingRight = false;
@@ -360,7 +371,22 @@ int jogo(void) {
                     salaAtual->enemy.x -= velocidadeBoss * GetFrameTime();
                     if (salaAtual->enemy.x <= 0) movingRight = true;
                 }
-
+                */
+                
+                if (ultimoMovBoss > countdownTime + 1) {
+                    ultimoMovBoss = countdownTime;
+                    /*
+                    char *resposta = respt("me dê um numero x, sendo 0 <= x <= 2");
+                    sscanf(resposta, "%d", &randMov);
+                    */
+                    randMov = arrayBoss[movAtual];
+                    movAtual++;
+                }   
+                if (randMov == 1) {
+                    if(!(salaAtual->enemy.x + salaAtual->enemy.width + velocidadeBoss * GetFrameTime()>= largura)) salaAtual->enemy.x += velocidadeBoss * GetFrameTime();
+                } else if (randMov == 2) {
+                    if (!(salaAtual->enemy.x - velocidadeBoss * GetFrameTime() <= 0)) salaAtual->enemy.x -= velocidadeBoss * GetFrameTime();
+                }   
                 if (rand() % 8 == 0) {
                     for (int i = 0; i < maxBalasInimigo; i++) {
                         if (!salaAtual->balasInimigo[i].ativa) {
@@ -565,12 +591,22 @@ tela Menu(void) {
     InitAudioDevice();
 
     Texture2D menuBackground = LoadTexture("./images/backgroundMenu.jpeg");
+    
     SetTextureFilter(menuBackground, TEXTURE_FILTER_POINT);
 
     Music menuMusic = LoadMusicStream("./music/significance.mp3");
     SetMusicVolume(menuMusic, 0.5f);
     PlayMusicStream(menuMusic);
-
+    char *resposta = respt("me dê 300 numeros x, sendo 0 <= x <= 2 e no formato:x x x x x x x");
+    int j = 0;
+    int i = 0;
+    while(i < 600){
+        if(i%2 == 0) {
+            resposta[i] = arrayBoss[j]; 
+            j++;
+        }
+        i++;
+    }
     int selectedOption = 0;
     int numRanking = contScore(ranking);
     const char *menuOptions[quantOpcoes] = { "Iniciar", "Instruções", "Ranking", "Sair" };

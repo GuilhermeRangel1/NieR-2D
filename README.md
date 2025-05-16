@@ -90,6 +90,7 @@ Prepare-se para uma experiência única, onde o mundo de NieR ganha vida em pixe
     <a >  Erick Belo -
     eab2@gmail.com 📩
   </li> 
+        <li>
     <a >  Guilherme Rangel -
      gvrs@cesar.school 📩
-  </li>
+  

@@ -10,10 +10,10 @@
 #define VOLUME 0.5f
 #define quantOpcoes 4
 #define gravidade 500.0f
-#define pulo -450.0f
+#define pulo -550.0f
 #define velocidadePlayer 350.0f
 #define velocidadeBala 500.0f
-#define velocidadeInimigo 220.0f
+#define velocidadeInimigo 150.0f
 #define velocidadeBoss 160.0f
 #define quantRecordes 10
 #define maxBalas 15
@@ -412,14 +412,21 @@ int jogo(void) {
                         }
                     }
                 }
-            } else {
-                Vector2 direction = {player.x - salaAtual->enemy.x, player.y - salaAtual->enemy.y};
-                float magnitude = sqrt(direction.x * direction.x + direction.y * direction.y);
-                if (magnitude > 0) {
-                    direction.x /= magnitude;
-                    salaAtual->enemy.x += direction.x * velocidadeInimigo * GetFrameTime();
-                }
-            }
+                } else {
+                            Vector2 direction = {player.x - salaAtual->enemy.x, player.y - salaAtual->enemy.y};
+                            float magnitude = sqrt(direction.x * direction.x + direction.y * direction.y);
+                            if (magnitude > 0) {
+                                direction.x /= magnitude;
+                                salaAtual->enemy.x += direction.x * velocidadeInimigo * GetFrameTime();
+                            }
+                            if (salaAtual->enemy.y < player.y) {
+                                salaAtual->enemy.y += velocidadeInimigo * GetFrameTime();
+                            } else if (salaAtual->enemy.y > player.y) {
+                                salaAtual->enemy.y -= velocidadeInimigo * GetFrameTime();
+                            } else {
+                               
+                            }
+                        }
 
             if (CheckCollisionRecs(player, salaAtual->enemy)) {
                 playerLife--;

@@ -419,7 +419,7 @@ int jogo(void) {
                                 direction.x /= magnitude;
                                 salaAtual->enemy.x += direction.x * velocidadeInimigo * GetFrameTime();
                             }
-                            if (salaAtual->enemy.y < player.y) {
+                            if (salaAtual->enemy.y +20 < player.y) {
                                 salaAtual->enemy.y += velocidadeInimigo * GetFrameTime();
                             } else if (salaAtual->enemy.y > player.y) {
                                 salaAtual->enemy.y -= velocidadeInimigo * GetFrameTime();
